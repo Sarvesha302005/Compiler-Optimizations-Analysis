@@ -1,0 +1,7 @@
+gcc -O0 -S code.c -o O0.s
+gcc -O2 -S code.c -o O2.s
+
+diff -y O0.s O2.s > differences.txt
+
+grep -c "^\s*[a-z]" O0.s > instructionLines.txt
+grep -c "^\s*[a-z]" O2.s >> instructionLines.txt

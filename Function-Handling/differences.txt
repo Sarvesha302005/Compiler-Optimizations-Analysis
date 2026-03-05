@@ -1,0 +1,97 @@
+	.file	"code.c"						.file	"code.c"
+	.text								.text
+	.type	add, @function				      |		.p2align 4
+add:							      <
+.LFB0:							      <
+	.cfi_startproc					      <
+	endbr64						      <
+	pushq	%rbp					      <
+	.cfi_def_cfa_offset 16				      <
+	.cfi_offset 6, -16				      <
+	movq	%rsp, %rbp				      <
+	.cfi_def_cfa_register 6				      <
+	movl	%edi, -4(%rbp)				      <
+	movl	%esi, -8(%rbp)				      <
+	movl	-4(%rbp), %edx				      <
+	movl	-8(%rbp), %eax				      <
+	addl	%edx, %eax				      <
+	popq	%rbp					      <
+	.cfi_def_cfa 7, 8				      <
+	ret						      <
+	.cfi_endproc					      <
+.LFE0:							      <
+	.size	add, .-add				      <
+	.globl	inline_test						.globl	inline_test
+	.type	inline_test, @function					.type	inline_test, @function
+inline_test:							inline_test:
+.LFB1:							      |	.LFB24:
+	.cfi_startproc							.cfi_startproc
+	endbr64								endbr64
+	pushq	%rbp					      |		leal	5(%rdi), %eax
+	.cfi_def_cfa_offset 16				      <
+	.cfi_offset 6, -16				      <
+	movq	%rsp, %rbp				      <
+	.cfi_def_cfa_register 6				      <
+	subq	$8, %rsp				      <
+	movl	%edi, -4(%rbp)				      <
+	movl	-4(%rbp), %eax				      <
+	movl	$5, %esi				      <
+	movl	%eax, %edi				      <
+	call	add					      <
+	leave						      <
+	.cfi_def_cfa 7, 8				      <
+	ret								ret
+	.cfi_endproc							.cfi_endproc
+.LFE1:							      |	.LFE24:
+	.size	inline_test, .-inline_test				.size	inline_test, .-inline_test
+	.section	.rodata				      |		.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:								.LC0:
+	.string	"Result: %d\n"						.string	"Result: %d\n"
+	.text						      |		.section	.text.startup,"ax",@progbits
+							      >		.p2align 4
+	.globl	main							.globl	main
+	.type	main, @function						.type	main, @function
+main:								main:
+.LFB2:							      |	.LFB25:
+	.cfi_startproc							.cfi_startproc
+	endbr64								endbr64
+	pushq	%rbp					      |		subq	$8, %rsp
+	.cfi_def_cfa_offset 16						.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16				      |		movl	$15, %edx
+	movq	%rsp, %rbp				      |		movl	$1, %edi
+	.cfi_def_cfa_register 6				      |		xorl	%eax, %eax
+	subq	$16, %rsp				      |		leaq	.LC0(%rip), %rsi
+	movl	$10, %edi				      |		call	__printf_chk@PLT
+	call	inline_test				      |		xorl	%eax, %eax
+	movl	%eax, -4(%rbp)				      |		addq	$8, %rsp
+	movl	-4(%rbp), %eax				      |		.cfi_def_cfa_offset 8
+	movl	%eax, %esi				      <
+	leaq	.LC0(%rip), %rax			      <
+	movq	%rax, %rdi				      <
+	movl	$0, %eax				      <
+	call	printf@PLT				      <
+	movl	$0, %eax				      <
+	leave						      <
+	.cfi_def_cfa 7, 8				      <
+	ret								ret
+	.cfi_endproc							.cfi_endproc
+.LFE2:							      |	.LFE25:
+	.size	main, .-main						.size	main, .-main
+	.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0		.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+	.section	.note.GNU-stack,"",@progbits			.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"				.section	.note.gnu.property,"a"
+	.align 8							.align 8
+	.long	1f - 0f							.long	1f - 0f
+	.long	4f - 1f							.long	4f - 1f
+	.long	5							.long	5
+0:								0:
+	.string	"GNU"							.string	"GNU"
+1:								1:
+	.align 8							.align 8
+	.long	0xc0000002						.long	0xc0000002
+	.long	3f - 2f							.long	3f - 2f
+2:								2:
+	.long	0x3							.long	0x3
+3:								3:
+	.align 8							.align 8
+4:								4:
