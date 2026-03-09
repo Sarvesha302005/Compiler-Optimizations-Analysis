@@ -1,8 +1,12 @@
 	.file	"code.c"
 	.text
-	.globl	loop_invariant
-	.type	loop_invariant, @function
-loop_invariant:
+	.section	.rodata
+.LC0:
+	.string	"%d\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -11,81 +15,33 @@ loop_invariant:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movq	%rdi, -24(%rbp)
-	movl	%esi, -28(%rbp)
-	movl	$0, -8(%rbp)
-	movl	$0, -4(%rbp)
+	subq	$16, %rsp
+	movl	$5, -12(%rbp)
+	movl	$10, -8(%rbp)
+	movl	$0, -16(%rbp)
 	jmp	.L2
 .L3:
-	movl	-4(%rbp), %eax
-	cltq
-	leaq	0(,%rax,4), %rdx
-	movq	-24(%rbp), %rax
-	addq	%rdx, %rax
-	movl	(%rax), %edx
-	movl	%edx, %eax
-	sall	$2, %eax
+	movl	-12(%rbp), %eax
+	imull	-8(%rbp), %eax
+	movl	%eax, -4(%rbp)
+	movl	-4(%rbp), %edx
+	movl	-16(%rbp), %eax
 	addl	%edx, %eax
-	addl	%eax, %eax
-	addl	%eax, -8(%rbp)
-	addl	$1, -4(%rbp)
-.L2:
-	movl	-4(%rbp), %eax
-	cmpl	-28(%rbp), %eax
-	jl	.L3
-	movl	-8(%rbp), %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE0:
-	.size	loop_invariant, .-loop_invariant
-	.section	.rodata
-.LC0:
-	.string	"Result: %d\n"
-	.text
-	.globl	main
-	.type	main, @function
-main:
-.LFB1:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$48, %rsp
-	movq	%fs:40, %rax
-	movq	%rax, -8(%rbp)
-	xorl	%eax, %eax
-	movl	$1, -32(%rbp)
-	movl	$2, -28(%rbp)
-	movl	$3, -24(%rbp)
-	movl	$4, -20(%rbp)
-	movl	$5, -16(%rbp)
-	leaq	-32(%rbp), %rax
-	movl	$5, %esi
-	movq	%rax, %rdi
-	call	loop_invariant
-	movl	%eax, -36(%rbp)
-	movl	-36(%rbp), %eax
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	printf@PLT
+	addl	$1, -16(%rbp)
+.L2:
+	cmpl	$9, -16(%rbp)
+	jle	.L3
 	movl	$0, %eax
-	movq	-8(%rbp), %rdx
-	subq	%fs:40, %rdx
-	je	.L7
-	call	__stack_chk_fail@PLT
-.L7:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE1:
+.LFE0:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
 	.section	.note.GNU-stack,"",@progbits
